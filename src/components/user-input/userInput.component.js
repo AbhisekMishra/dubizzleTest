@@ -38,7 +38,7 @@ const UserInput = (props) => {
                 onChange={e => setUser(e.target.value)}
               />
             </Grid>
-            <Grid item xs={4} sm={4} md={2}>
+            <Grid item xs={4} sm={4} md={1}>
               <Button variant="contained" color="primary" className={classes.button} onClick={() => searchGistByUser(user)}>
                 Search
               </Button>
@@ -46,6 +46,13 @@ const UserInput = (props) => {
           </Grid>
     </div>
   );
+};
+
+UserInput.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+  user: PropTypes.string.isRequired,
+  setUser: PropTypes.func.isRequired,
+  searchGistByUser: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(UserInput);

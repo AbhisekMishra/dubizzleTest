@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import types from './types'
 
 const initialState = {
@@ -16,6 +15,11 @@ function app(state = initialState, action) {
     }
     case types.SET_USER: {
         return {...state, user: action.payload}
+    }
+    case types.FETCH_FORK_SUCCESS: {
+        const gistListTemp = state.gists;
+        const updatedGistList = gistListTemp.map(gist => gist.id === action.payload.gistId ? {...gist, forks: action.payload.result} : gist);
+        return {...state, gists: updatedGistList}
     }
     default:
       return state

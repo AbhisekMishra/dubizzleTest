@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -7,9 +7,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
-import { uniqBy } from 'lodash';
+import { uniqBy, take } from 'lodash';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import Avatar from '@material-ui/core/Avatar';
+import Fab from '@material-ui/core/Fab';
 
 const styles = (theme) => ({
     card: {
@@ -26,8 +28,6 @@ const styles = (theme) => ({
     },
     root: {
         flexGrow: 1,
-        marginLeft: '10rem',
-        marginRight: '10rem',
         marginTop: '3rem',
     },
     cardItem: {
@@ -36,16 +36,30 @@ const styles = (theme) => ({
     chip: {
         marginTop: theme.spacing.unit,
     },
+    bigAvatar: {
+        marginTop: theme.spacing.unit,
+        margin: 10,
+        width: 60,
+        height: 60,
+    },
 });
+
+const Container = props => {
+    const { classes, containerProps } = props;
+    return (<Grid container className={classes.root} spacing={24} justify='center' {...containerProps}>
+        {props.children}
+    </Grid>)
+}
 
 const getUniqueElements = array => uniqBy(array, 'language');
 
 const GistList = props => {
     const { classes, gists, isFetching } = props;
+    console.log(gists);
     if (!gists) return null;
-    if (isFetching) return <CircularProgress className={classes.progress} />
-    return gists && gists.length === 0 ? (<h3>No gists found</h3>) : (
-        <Grid container className={classes.root} spacing={24}>
+    if (isFetching) return <Container {...props}><Grid item><CircularProgress className={classes.progress} /></Grid></Container>;
+    return gists && gists.length === 0 ? (<Container {...props} containerProps={{ spacing: 24 }}><h3>No gists found</h3></Container>) : (
+        <Container {...props} containerProps={{ spacing: 24 }}>
             {gists.map((gist, index) => (
                 <Grid item>
                     <Card className={classes.card}>
@@ -56,11 +70,17 @@ const GistList = props => {
                             <Typography component="p" className={classes.cardItem}>
                                 Files Types
                         </Typography>
-                            <Fragment>
-                                {getUniqueElements(Object.keys(gist.files)).map(file =>
-                                    <Chip label={gist.files[file].language ? gist.files[file].language : 'Unknown'} className={classes.chip} />
-                                )}
-                            </Fragment>
+                            {getUniqueElements(Object.keys(gist.files)).map(file =>
+                                <Chip label={gist.files[file].language ? gist.files[file].language : 'Unknown'} className={classes.chip} />
+                            )}
+                            {gist.forks && gist.forks.length > 0 && (<Typography component="p" className={classes.cardItem}>
+                                Forks
+                            </Typography>)}
+                            {gist.forks && gist.forks.length > 0 && take(gist.forks, 3).map(fork => (
+                                <Fab color="primary" aria-label={fork.owner.login} className={classes.cardItem} onClick={() => window.open(fork.html_url)}>
+                                    <Avatar alt={fork.owner.login} src={fork.owner.avatar_url} className={classes.bigAvatar} />
+                                </Fab>
+                            ))}
                         </CardContent>
                         <CardActions>
                             <Button size="large" color="primary" onClick={() => window.open(gist.html_url)}>Visit Page</Button>
@@ -68,12 +88,14 @@ const GistList = props => {
                     </Card>
                 </Grid>
             ))}
-        </Grid>
+        </Container>
     );
 }
 
 GistList.propTypes = {
     classes: PropTypes.object.isRequired,
+    gists: PropTypes.arrayOf.isRequired,
+    isFetching: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(GistList);
