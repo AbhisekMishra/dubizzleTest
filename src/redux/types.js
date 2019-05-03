@@ -1,0 +1,8 @@
+const types = { 
+    SET_USER: 'SET_USER',
+    FETCH_GIST_SUCCESS: 'FETCH_GIST_SUCCESS',
+    FETCH_GIST_START: 'FETCH_GIST_START',
+    FETCH_GIST_FAILED: 'FETCH_GIST_FAILED',
+};
+
+export default types;
