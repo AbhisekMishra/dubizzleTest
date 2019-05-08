@@ -17,7 +17,7 @@ function app(state = initialState, action) {
         return {...state, user: action.payload}
     }
     case types.FETCH_FORK_SUCCESS: {
-        const gistListTemp = state.gists;
+        const gistListTemp = [].concat(state.gists);
         const updatedGistList = gistListTemp.map(gist => gist.id === action.payload.gistId ? {...gist, forks: action.payload.result} : gist);
         return {...state, gists: updatedGistList}
     }

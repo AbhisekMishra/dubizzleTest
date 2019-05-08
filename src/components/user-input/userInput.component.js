@@ -38,7 +38,7 @@ const UserInput = (props) => {
                 onChange={e => setUser(e.target.value)}
               />
             </Grid>
-            <Grid item xs={4} sm={4} md={1}>
+            <Grid item xs={5} sm={5} md={1}>
               <Button variant="contained" color="primary" className={classes.button} onClick={() => searchGistByUser(user)}>
                 Search
               </Button>

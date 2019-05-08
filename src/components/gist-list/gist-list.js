@@ -15,7 +15,8 @@ import Fab from '@material-ui/core/Fab';
 
 const styles = (theme) => ({
     card: {
-        maxWidth: 275,
+        width: '20rem',
+        height: '20rem',
     },
     title: {
         fontSize: 14,
